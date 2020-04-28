@@ -1,0 +1,79 @@
+---
+title: "QUIZ"
+author: "Fabian Abrego"
+date: "4/27/2020"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+#Step Wise Model Selection 
+
+##Question
+
+For this question, we will be using the `teengam` data set included in the `Faraway` library. 
+
+
+**(a)** Set `gamble` as your response variable and using stepwise model selection, derive the best model. Do not use the `step` function for this. Use the `extarctAIC` function for AIC values instead of the `AIC` function. 
+
+
+```{r}
+gamble = faraway::teengamb
+modelstart = lm(gamble ~ 1, data = gamble)
+
+
+#First step 
+extractAIC(modelstart) #325.3354 Starting AIC 
+
+#Add a variable
+extractAIC(lm(gamble ~ sex, data = gamble)) #318.7866 -  Improvement 
+extractAIC(lm(gamble ~ status, data = gamble)) #327.2157 - No Improvement 
+extractAIC(lm(gamble ~ income, data = gamble)) #304.3356 - Greatest Improvement - Add to model
+extractAIC(lm(gamble ~ verbal, data = gamble)) #325.0025 - Improvement 
+
+#Second Step 
+#Current AIC = 304.3356
+
+#Add a variable
+extractAIC(lm(gamble ~ income + sex, data = gamble)) #296.6268 - Add to model 
+extractAIC(lm(gamble ~ income + status, data = gamble)) #305.112 - No Improvement 
+extractAIC(lm(gamble ~ income + verbal, data = gamble)) #305.3536 - No Improvement 
+
+#Remove a variable
+extractAIC(modelstart) #325.3354 - No Improvement 
+
+#Third step 
+#Current AIC = 296.6268
+
+#Add a variable 
+extractAIC(lm(gamble ~ income + sex + status, data = gamble)) #298.2086 - No Improvement 
+extractAIC(lm(gamble ~ income + sex + verbal, data = gamble)) #296.2145 - Add to model 
+
+#Remove a variable 
+extractAIC(lm(gamble ~ income, data = gamble)) #304.3356 - No Improvement 
+extractAIC(lm(gamble ~ sex, data = gamble)) #318.7866 - No Improvement 
+
+#Fourth Step 
+#Current AIC = 296.2145
+
+#Add a variable 
+extractAIC(lm(gamble ~ income + sex + verbal + status, data = gamble)) #298.1758 - No Improvement 
+
+#Remove a variable 
+extractAIC(lm(gamble ~ income + sex, data = gamble)) #296.6268 - No Improvement 
+extractAIC(lm(gamble ~ income + verbal, data = gamble)) #305.3536 - No Improvement 
+extractAIC(lm(gamble ~ sex + verbal, data = gamble)) #316.6443 - No Improvement 
+
+Final_Model = lm(gamble ~ income + sex + verbal, data = gamble)
+```
+
+**(b)** Use the `step` function to derive the best model from stepwise selection. Are they the same?
+
+```{r}
+#Using Step Function
+model_step = step(modelstart, scope = gamble ~ sex + status + income + verbal, direction = "both")
+
+#They are equal
+summary(model_step)
+summary(Final_Model)
+```
