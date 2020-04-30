@@ -1,0 +1,70 @@
+---
+title: "quiz_ohanian3"
+author: "Jackson Ohanian"
+date: "4/29/2020"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## MLR 
+
+## QUIZ
+## QUESTION 1
+I will use the data on airplanes that I found for the group project but was not used. 
+Using this data, use MLR to find an appropriate model for total departures. 
+
+```{r cars}
+ap <- read.csv("airport.csv")
+```
+
+1.a Create a nested MLR of this data out of two SLRs, predicting departures. Construct a confidence interval for each non-nested (SLR) model. Use a signifigance level of 0.95. Interpret the difference between the two intervals. 
+
+
+```{r}
+model1 <- lm(departures~Passengers, data = ap)
+model2 <- lm(departures~Freight, data = ap)
+model3 <- lm(departures~Passengers + Freight, data = ap)
+```
+
+```{r}
+confint(model1, newdata = ap, interval = "prediction", level = 0.95)
+confint(model2, newdata = ap, interval = "prediction", level = 0.95)
+```
+
+While the interval for departures on passengers (model 1) is relatively tight, the interval fro freight (model 2) is rather loose. This could imply that freight is not as reliant of a predictor as Passengers is. 
+
+
+1.b Compare the r-squared values of these models
+```{r}
+summary(model1)$r.squared
+summary(model2)$r.squared
+summary(model3)$r.squared
+```
+
+
+While the MLR (model 3) and passengers model (model 1) have relatively similar R squared value, the freight model (model 2) has a rather low R squared value, further implying freight is not a good predictor, as it does not account for a large amount of the variance in departures. 
+
+
+##1.c Compare these models using anova tests
+```{r}
+null_model = lm(departures ~ 1, data = ap)
+anova(null_model, model1)
+anova(null_model, model2)
+anova(null_model, model3)
+
+anova(model1, model3)
+anova(model2, model3)
+```
+
+##1.d Which model appears to be the best fit? Why?
+
+Comparison of all three models with a null model shows that all three are signifigant regressions. Comparison of all three models as well as the r squared values of the model, shows that model 2 does not do a great job of explaining the variance in departures. 
+
+ANOVA tests realize that, at a signifigance level of 0.05, model 3 is not a signifigant regression compared to the nested model model 1. Therefore, the null hypothesis is accepted, that modeling departures by passengers is no different than modeling by passengers + freight. 
+
+With this in mind, I would choose model 1, passengers as the only predictor, as the best model of the 3 I selected. 
