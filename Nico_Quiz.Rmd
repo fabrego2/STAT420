@@ -46,8 +46,8 @@ summary(model_b)$coefficient[2:4,4]
 The values in the `x3` row are not NAs anymore.  
 They are different because the `x3` in `model_a` is exactly linearly dependent to `x1` and `x2`. While in `model_b`, the `x3` is still linearly dependent to `x1` and `x2` but not exactly.
 
-**(c)** Notice that the R-squared in `model_b` is very close to 1. However, none of the predictors are significant. Why do you think this happen?  
-This happen because the predictors in `model_b` is highly correlated (`x3` is very linearly dependent to `x1` and `x2` with the $\sigma$ of $\epsilon$ only 0.1) which reduces the significance of `x1` and `x2`.
+**(c)** Notice that the R-squared in `model_b` is very close to 1. However, none of the predictors are significant. Why do you think this happens?  
+This happens because the predictors in `model_b` is highly correlated (`x3` is very linearly dependent to `x1` and `x2` with the $\sigma$ of $\epsilon$ only 0.1) which reduces the significance of `x1` and `x2`.
 
 **(d)** Suppose `X = cbind(1, x1, x2, x3_b)`. Find the eigenvalues of $X^TX$. Report the smallest eigenvalue. What do you think is the relationship between this eigenvalue and the significance of the t-test above? (Remember: $(X^TX)^{-1} = QD^{-1}Q^T$ where $D$ is a diagonal matrix with the eigenvalues of $X^TX$ and variance of $\hat\beta$ is $\hat\sigma^2(X^TX)^{-1}$)
 ```{r}
@@ -67,3 +67,6 @@ vif(model_b)
 ```
 Yes, all of the predictors are "problematic" because the VIFs are very large.  
 It means there are correlations between the predictors.
+
+# Appendix 
+- The Collinearity problem used the Multicollinearity_SLIDES powerpoint as a reference.
