@@ -77,3 +77,6 @@ model_step = step(modelstart, scope = gamble ~ sex + status + income + verbal, d
 summary(model_step)
 summary(Final_Model)
 ```
+
+
+The inspiration for this problem was on the basis of wanting to understand the stepwise selection process as when it was first presented, it left me confused in regard to the logic of the process. The problem and solution was all worked out and did not contribute outside sources into its creation. 
