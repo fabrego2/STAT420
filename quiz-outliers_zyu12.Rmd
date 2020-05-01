@@ -1,0 +1,58 @@
+---
+title: "STAT 420 Quiz"
+author: "Zhengyuan Yu zyu12"
+date: "4/30/2020"
+output: html_document
+---
+
+# Unusual Observations
+
+For this question we will be using the `aatemp` data from the `faraway` package.
+
+```{r}
+library(faraway)
+```
+
+**(a)** Fit an linear regression model with `temp` as the response and `year` as the predictor, plot the data using `temp` for y and `year` for x, thenraw the fitted line of your linear model on the graph.
+
+```{r}
+aatemp_model = lm(temp ~ year, data = aatemp)
+plot(temp ~ year, data = aatemp, col = "darkgrey")
+abline(aatemp_model, col = "dodgerblue")
+```
+
+**(b)** Identify any data that has a high leverage.
+```{r}
+aatemp_model_lev = hatvalues(aatemp_model)
+aatemp_model_lev[aatemp_model_lev > 2 * mean(aatemp_model_lev)]
+```
+
+**(c)** Find all data point that is an outlier.
+```{r}
+rstandard(aatemp_model)[abs(rstandard(aatemp_model)) > 2]
+```
+
+**(d)** Is there any influential point in the data? If yes, use the correct method to find them. Then discuss the relationship between influential point, outlier, and high leverage point.
+```{r}
+aatemp_model_cook = cooks.distance(aatemp_model)
+aatemp_model_cook[aatemp_model_cook > 4 / length(aatemp_model_cook)]
+```
+- We can see that influential points are a combination of of high leverage points and outliers. This is indeed the case because Cook's Distance depends on both leverage and standardized residuals by $D_i=\frac{1}{p}r_i^2\frac{h_i}{1-h_i}$.
+
+**(e)** Refit a linear model on the data set where the influential points are excluded. Plot the data with influential points removed and add the refitted lines to the graph. 
+```{r}
+aatemp_model_corrected = lm(temp~year, data = aatemp, subset = aatemp_model_cook <= 4 / length(aatemp_model_cook))
+
+plot(temp ~ year, data = aatemp, subset = aatemp_model_cook <= 4 / length(aatemp_model_cook), col = "darkgrey")
+abline(aatemp_model_corrected, col = "dodgerblue")
+```
+
+**(f)**Compares the linear fit between (a) and (e). Discuss which one is a better fit.
+```{r}
+summary(aatemp_model)
+summary(aatemp_model_corrected)
+
+sqrt(mean(residuals(aatemp_model)^2))
+sqrt(mean(residuals(aatemp_model_corrected)^2))
+```
+- We can see that the RMSE of the fitted model in (e) is better(lower) than the one we get in (a), but the R^2 value of this newly fitted linear regression is actually worse(lower) than the previous model. This means that we are not sure which one is the better fit here, so further testing or a new fit will be needed.
